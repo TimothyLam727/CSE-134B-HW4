@@ -388,6 +388,17 @@ form {
     align-self: center;
     justify-content: center;
     margin: 250px 0;
+    gap: 1em;
+}
+
+form fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+form label {
+    font-weight: bold;
 }
 
 form textarea {
@@ -395,6 +406,15 @@ form textarea {
     width: 80%;
     max-width: 250px;
     height: 100px;
+}
+
+form button:hover {
+    background-color: #646c74;
+}
+
+#error-message, #info-message {
+    font-size: 0.9rem;
+    color: red;
 }
 
 footer p {
