@@ -394,11 +394,50 @@ form {
 form fieldset {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 1em;
+    border: blue solid ;
+    width: 50vw;
+    max-width: 500px;
+}
+
+form fieldset output {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
 }
 
 form label {
     font-weight: bold;
+}
+
+form input:required, form textarea:required {
+    border: 2px solid #ccc;
+}
+
+form input:required:placeholder-shown, form textarea:required:placeholder-shown {
+    border-color: red;
+}
+
+form input:valid, form textarea:valid {
+    border-color: green;
+}
+
+form input:invalid, form textarea:invalid {
+    border-color: red;
+}
+
+#error-message {
+    color: red;
+    font-size: 0.9rem;
+    display: block;
+}
+
+#info-message {
+    color: green;
+    font-size: 0.9rem;
+    display: block;
 }
 
 form textarea {
@@ -408,8 +447,19 @@ form textarea {
     height: 100px;
 }
 
+form button {
+    color: black;
+    border-radius: 5px;
+    width: 5vw;
+    height: 5vh;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
 form button:hover {
     background-color: #646c74;
+    transform: scale(125%);
 }
 
 #error-message, #info-message {

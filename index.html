@@ -48,18 +48,15 @@
                 <picture>
                     <source srcset="src/img/image_2-min.avif" type="image/avif">
                     <source srcset="src/img/image_2-min.webp" type="image/webp">
-                    <img src="src/img/image_2-min.jpeg" 
-                         srcset="src/img/image_2-min-800w.jpeg 800w, 
+                    <img src="src/img/image_2-min.jpeg" srcset="src/img/image_2-min-800w.jpeg 800w, 
                                  src/img/image_2-min-1200w.jpeg 1200w, 
-                                 src/img/image_2-min-1600w.jpeg 1600w"
-                         sizes="(max-width: 600px) 800px, 
+                                 src/img/image_2-min-1600w.jpeg 1600w" sizes="(max-width: 600px) 800px, 
                                 (max-width: 1200px) 1200px, 
                                 1600px"
-                         alt="Timothy Lam, a Computer Science student at UC San Diego, smiling at a scenic outdoor location." 
-                         loading="lazy" 
-                         style="height: 400px; width: auto; object-fit: cover; object-position: center;">
+                        alt="Timothy Lam, a Computer Science student at UC San Diego, smiling at a scenic outdoor location."
+                        loading="lazy" style="height: 400px; width: auto; object-fit: cover; object-position: center;">
                 </picture>
-                
+
                 <hgroup>
                     <h1>Hello, I am Timothy Lam!</h1>
                     <p>I am a student, computer enthusiast, and a debugger of my life.</p>
@@ -77,16 +74,14 @@
                     <picture>
                         <source srcset="src/img/image_1-min.avif" type="image/avif">
                         <source srcset="src/img/image_1-min.webp" type="image/webp">
-                        <img src="src/img/image_1-min.jpeg" 
-                             srcset="src/img/image_1-min-300w.jpeg 300w, 
+                        <img src="src/img/image_1-min.jpeg" srcset="src/img/image_1-min-300w.jpeg 300w, 
                                      src/img/image_1-min-600w.jpeg 600w, 
-                                     src/img/image_1-min-1200w.jpeg 1200w"
-                             sizes="(max-width: 600px) 300px, 
+                                     src/img/image_1-min-1200w.jpeg 1200w" sizes="(max-width: 600px) 300px, 
                                     (max-width: 1200px) 600px, 
                                     1200px"
-                             alt="A smiling Timothy Lam, a Computer Science student at UC San Diego, standing in front of a scenic background." 
-                             loading="lazy" 
-                             style="height: auto; width: 300px; object-fit: cover; object-position: center;">
+                            alt="A smiling Timothy Lam, a Computer Science student at UC San Diego, standing in front of a scenic background."
+                            loading="lazy"
+                            style="height: auto; width: 300px; object-fit: cover; object-position: center;">
                     </picture>
                     <figcaption>This is me!</figcaption>
                 </figure>
@@ -286,34 +281,104 @@
         <form action="https://httpbin.org/post" method="POST">
             <h3>Contact Me</h3>
             <fieldset>
-                <legend>Your Info.</legend>
+                <!-- <legend>Your Info.</legend> -->
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" minlength="2" maxlength="50" placeholder="Joe Mama" required>
+                <output class="error-message"></output>
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" placeholder="joe@email.com" required>
+                <output class="error-message"></output>
             </fieldset>
 
-            <!-- <label for="rating">Do you like my website haha?:</label>
-            <input list="ratings" id="rating" name="rating" placeholder="Select or Type a Rating" required>
-            <datalist id="ratings">
-                <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
-                <option value="4">⭐⭐⭐⭐ - Good</option>
-                <option value="3">⭐⭐⭐ - Average</option>
-                <option value="2">⭐⭐ - Poor</option>
-                <option value="1">⭐ - Very Bad</option>
-            </datalist> -->
+            <fieldset>
+                <label for="message">Comments:</label>
+                <textarea id="message" name="message" minlength="10" maxlength="300" placeholder="Leave me a message!"
+                    pattern="^[a-zA-Z0-9\s.,!?'-]+$" required></textarea>
+                <output class="error-message"></output>
+                <output id="info-message"></output>
+            </fieldset>
 
-            <label for="message">Comments:</label>
-            <textarea id="message" name="message" maxlength="300" placeholder="Leave me a message!"></textarea>
 
             <input type="hidden" name="possible_bot" value="true">
 
-            <output id="error-message"></output>
-            <output id="info-message"></output>
-
             <button type="submit">Submit</button>
         </form>
+
+        <script>
+            let formErrors = [];
+            let hasInvalidCharacter = false;
+
+            function validateField(field) {
+                if (!field.checkValidity()) {
+                    if (field.id == 'name') {
+                        field.nextElementSibling.textContent = "Please enter a valid name!"
+                    } else if (field.type == 'email') {
+                        field.nextElementSibling.textContent = "Please enter a valid email address!"
+                    } else {
+                        field.nextElementSibling.textContent = field.validationMessage;
+                    }
+                    field.nextElementSibling.style.color = "red";
+                    formErrors.push({ field: field.name, message: field.validationMessage, value: field.value });
+                } else {
+                    field.nextElementSibling.textContent = "";
+                }
+            }
+
+            document.querySelectorAll("input, textarea").forEach(field => {
+                field.addEventListener("input", () => validateField(field));
+            });
+
+            // Input Masking
+            document.getElementById("message").addEventListener("input", function (event) {
+                let pattern = /^[a-zA-Z0-9\s.,!?'-]*$/;
+                let errorMessage = this.nextElementSibling;
+
+                if (!pattern.test(event.data)) {
+                    event.target.style.border = "2px solid red";
+                    errorMessage.textContent = `Invalid character: '${event.data}'`;
+                    errorMessage.style.color = "red";
+                    hasInvalidCharacter = true;
+                } else {
+                    hasInvalidCharacter = false;
+                }
+            });
+
+            // Character Countdown for textarea
+            document.getElementById("message").addEventListener("input", function () {
+                let maxLength = 300;
+                let currentLength = this.value.length;
+                let infoMessage = document.getElementById("info-message");
+
+                infoMessage.textContent = `${maxLength - currentLength} characters remaining`;
+                infoMessage.style.color = currentLength > maxLength - 50 ? "orange" : "green";
+                if (currentLength > maxLength) {
+                    infoMessage.style.color = "red";
+                }
+            });
+
+            // Capture Errors and Append to Form Before Submit
+            document.querySelector("form").addEventListener("submit", function (event) {
+                formErrors = []; // Reset errors before checking
+                document.querySelectorAll("input, textarea").forEach(field => validateField(field));
+
+                if (hasInvalidCharacter) {
+                    event.preventDefault();
+                    alert("Your message contains invalid characters. Please fix before submitting.");
+
+                    // make sure the content of the submit button will get reset
+                    this.querySelector("button[type='submit']").textContent = "Submit";
+
+                    return;
+                }
+
+                let errorField = document.createElement("input");
+                errorField.type = "hidden";
+                errorField.name = "form-errors";
+                errorField.value = JSON.stringify(formErrors);
+                this.appendChild(errorField);
+            });
+        </script>
 
         <p>&copy; 2025 Timothy Lam</p>
     </footer>
