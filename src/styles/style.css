@@ -417,7 +417,6 @@ form fieldset {
     align-items: center;
     justify-content: center;
     gap: 1em;
-    border: blue solid ;
     width: 50vw;
     max-width: 500px;
 }
