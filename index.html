@@ -307,7 +307,8 @@
             <fieldset>
                 <!-- <legend>Your Info.</legend> -->
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" minlength="2" maxlength="50" pattern="^[A-Za-z\s-']+(?: [A-Za-z\s-']+)*$" placeholder="Joe Mama" required>
+                <input type="text" id="name" name="name" minlength="2" maxlength="50"
+                    pattern="^[A-Za-z\s-']+(?: [A-Za-z\s-']+)*$" placeholder="Joe Mama" required>
                 <output class="error-message"></output>
 
                 <label for="email">Email:</label>
@@ -330,11 +331,21 @@
         </form>
 
         <script>
-            let form_errors = [];
+            let formErrors = [];
             let hasInvalidCharacter = false;
+
+            // function to push error details into the formErrors array as JSON format
+            function logError(field, message) {
+                formErrors.push({
+                    field: field.name || field.id,
+                    message: message,
+                    value: field.value
+                });
+            }
 
             function validateField(field) {
                 if (!field.checkValidity()) {
+                    let message = field.validationMessage;
                     if (field.id == 'name') {
                         field.nextElementSibling.textContent = "Please enter a valid name!"
                     } else if (field.type == 'email') {
@@ -343,7 +354,7 @@
                         field.nextElementSibling.textContent = field.validationMessage;
                     }
                     field.nextElementSibling.style.color = "red";
-                    form_errors.push({ field: field.name, message: field.validationMessage, value: field.value });
+                    logError(field, message);
                 } else {
                     field.nextElementSibling.textContent = "";
                 }
@@ -363,13 +374,14 @@
                     errorMessage.textContent = `Invalid character: '${event.data}'`;
                     errorMessage.style.color = "red";
                     hasInvalidCharacter = true;
+                    
+                    logError(this, `Invalid character detected in name field: '${event.data}'`);
 
                     setTimeout(() => {
                         this.style.border = "";
                         errorMessage.textContent = "";
-                    }, 2000);
-
-                    this.value = this.value.replace(/[^A-Za-z\s'-]/g, "");
+                        this.value = this.value.replace(/[^A-Za-z\s'-]/g, "");
+                    }, 1500);
                 }
             })
 
@@ -384,12 +396,14 @@
                     errorMessage.style.color = "red";
                     hasInvalidCharacter = true;
 
+                    logError(this, `Invalid character detected in message: '${event.data}'`);
+
                     setTimeout(() => {
                         event.target.style.border = "";
                         event.target.nextElementSibling.textContent = "";
-                    }, 2000);
+                        event.target.value = event.target.value.replace(/[^a-zA-Z0-9\s.,!?'-]/g, "");
+                    }, 1500);
 
-                    event.target.value = event.target.value.replace(/[^a-zA-Z0-9\s.,!?'-]/g, "");
                 } else {
                     hasInvalidCharacter = false;
                 }
@@ -410,24 +424,17 @@
 
             // Capture Errors and Append to Form Before Submit
             document.querySelector("form").addEventListener("submit", function (event) {
-                form_errors = []; // Reset errors before checking
+                formErrors = []; // Reset errors before checking
                 document.querySelectorAll("input, textarea").forEach(field => validateField(field));
 
-                // if (hasInvalidCharacter) {
-                //     event.preventDefault();
-                //     alert("Your message contains invalid characters. Please fix before submitting.");
-
-                //     // make sure the content of the submit button will get reset
-                //     this.querySelector("button[type='submit']").textContent = "Submit";
-
-                //     return;
-                // }
-
-                let errorField = document.createElement("input");
-                errorField.type = "hidden";
-                errorField.name = "form-errors";
-                errorField.value = JSON.stringify(form_errors);
-                this.appendChild(errorField);
+                if (formErrors.length > 0) {
+                    // Create a hidden input field to send error data
+                    let errorField = document.createElement("input");
+                    errorField.type = "hidden";
+                    errorField.name = "form-errors";
+                    errorField.value = JSON.stringify(formErrors);
+                    this.appendChild(errorField);
+                }
             });
         </script>
 
