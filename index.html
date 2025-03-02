@@ -302,13 +302,13 @@
     </main>
     <br>
     <footer>
-        <form action="https://httpbin.org/post" method="POST">
+        <form action="https://httpbin.org/post" method="POST" >
             <h3>Contact Me</h3>
             <fieldset>
                 <!-- <legend>Your Info.</legend> -->
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" minlength="2" maxlength="50"
-                    pattern="^[A-Za-z\s-']+(?: [A-Za-z\s-']+)*$" placeholder="Joe Mama" required>
+                pattern="^[A-Za-z\s'\-]+$" placeholder="Joe Mama" required>
                 <output class="error-message"></output>
 
                 <label for="email">Email:</label>
@@ -374,7 +374,7 @@
                     errorMessage.textContent = `Invalid character: '${event.data}'`;
                     errorMessage.style.color = "red";
                     hasInvalidCharacter = true;
-                    
+
                     logError(this, `Invalid character detected in name field: '${event.data}'`);
 
                     setTimeout(() => {
@@ -424,16 +424,24 @@
 
             // Capture Errors and Append to Form Before Submit
             document.querySelector("form").addEventListener("submit", function (event) {
-                formErrors = []; // Reset errors before checking
+                // formErrors = []; // Reset errors before checking
+
                 document.querySelectorAll("input, textarea").forEach(field => validateField(field));
 
                 if (formErrors.length > 0) {
-                    // Create a hidden input field to send error data
-                    let errorField = document.createElement("input");
-                    errorField.type = "hidden";
-                    errorField.name = "form-errors";
+                    console.log("Form errors captured:", formErrors); // Debugging - Check if errors are captured
+
+                    let errorField = document.querySelector("input[name='form-errors']");
+
+                    // If the hidden field doesn't exist, create it
+                    if (!errorField) {
+                        errorField = document.createElement("input");
+                        errorField.type = "hidden";
+                        errorField.name = "form-errors";
+                        this.appendChild(errorField);
+                    }
+
                     errorField.value = JSON.stringify(formErrors);
-                    this.appendChild(errorField);
                 }
             });
         </script>
