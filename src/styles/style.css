@@ -41,13 +41,19 @@ header {
     width: 100%;
 }
 
+/* Hide theme toggle by default */
 #theme-toggle {
+    display: none;
+  }
+  /* Only show if JS is enabled */
+  .js #theme-toggle {
+    display: block;
     font-size: 1.5rem;
     margin-right: 3vw;
     background-color: transparent;
     border: none;
     border-radius: 5px;
-}
+  }
 
 #theme-toggle:hover {
     background-color: salmon;
@@ -118,9 +124,8 @@ header {
 
     /* Style dropdown content for mobile */
     .dropdown-content {
-        top: 60px; /* Push below button */
         left: 0;
-        width: 100%;
+        width: 50%;
         display: none;
         flex-direction: column;
         align-items: center;
